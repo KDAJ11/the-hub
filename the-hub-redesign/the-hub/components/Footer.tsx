@@ -44,7 +44,7 @@ export default function Footer() {
             © {new Date().getFullYear()} The Hub. All rights reserved.
           </p>
           <p className="text-xs" style={{ color: 'rgba(253,246,227,0.2)', fontFamily: 'DM Sans, sans-serif' }}>
-            Winnipeg, Manitoba
+            Powered by <a href="https://dotxlabs.com" target="_blank" style={{ color: 'rgba(255,215,0,0.4)' }}>DOTxLabs</a>
           </p>
         </div>
       </div>
