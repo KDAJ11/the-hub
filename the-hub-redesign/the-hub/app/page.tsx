@@ -101,12 +101,12 @@ export default function HomePage() {
         </div>
 
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce opacity-50">
-          <span style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.15em', color: '#FFD700' }}>SCROLL</span>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-            <path d="M12 5v14M5 12l7 7 7-7" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </div>
+        <div className="absolute bottom-8 left-0 right-0 flex flex-col items-center gap-2 animate-bounce opacity-50">
+  <span style={{ fontFamily: 'DM Sans', fontSize: '0.65rem', letterSpacing: '0.15em', color: '#FFD700' }}>SCROLL</span>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+    <path d="M12 5v14M5 12l7 7 7-7" stroke="#FFD700" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+</div>
       </section>
 
       {/* UPCOMING EVENT SPOTLIGHT */}
