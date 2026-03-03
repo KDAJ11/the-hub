@@ -30,10 +30,8 @@ export default function Footer() {
               { href: '/about', label: 'About' },
             ].map((link) => (
               <Link key={link.href} href={link.href}
-                className="text-sm transition-colors"
-                style={{ color: 'rgba(253,246,227,0.35)', fontFamily: 'DM Sans, sans-serif' }}
-                onMouseEnter={e => (e.currentTarget.style.color = '#FFD700')}
-                onMouseLeave={e => (e.currentTarget.style.color = 'rgba(253,246,227,0.35)')}>
+                className="text-sm transition-colors hover:text-yellow-400"
+                style={{ color: 'rgba(253,246,227,0.35)', fontFamily: 'DM Sans, sans-serif' }}>
                 {link.label}
               </Link>
             ))}
