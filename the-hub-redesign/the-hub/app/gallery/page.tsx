@@ -5,38 +5,25 @@ const galleryData = [
     event: "Sip & Paint Night — July 2024",
     slug: "sip-and-paint-july-2024",
     emoji: "🎨",
-    gradient: "linear-gradient(135deg, #5C1A6E 0%, #8B2DA8 100%)",
     description: "A creative evening of painting, good vibes, and great company.",
-    photos: [
-      { file: "Hub1.jpeg", alt: "Sip & Paint Night" },
-      { file: "Hub2.jpeg", alt: "Sip & Paint Night" },
-      { file: "Hub3.jpeg", alt: "Sip & Paint Night" },
-      { file: "Hub4.jpeg", alt: "Sip & Paint Night" },
-      { file: "Hub5.jpeg", alt: "Sip & Paint Night" },
-    ]
+    folder: "sip-and-paint",
+    photos: ["SP.jpeg", "SP1.jpeg", "SP3.jpeg"],
   },
   {
     event: "Games Night — February 2025",
     slug: "games-night-feb-2025",
     emoji: "🎮",
-    gradient: "linear-gradient(135deg, #2D1A5E 0%, #5E35A8 100%)",
     description: "A night of laughter, friendly competition, and great fellowship.",
-    photos: [
-      { file: "GN.jpeg", alt: "Games Night" },
-      { file: "GN2.jpeg", alt: "Games Night" },
-      { file: "GN3.jpeg", alt: "Games Night" },
-    ]
+    folder: "games-night",
+    photos: ["GN1.jpeg", "GN2.jpeg", "GN3.jpeg", "GN5.jpeg", "GN6.jpeg", "GN7.jpeg"],
   },
   {
     event: "Industry Insights Night — February 2025",
     slug: "asper-industry-night-feb-2025",
     emoji: "🎓",
-    gradient: "linear-gradient(135deg, #1A2D5E 0%, #2A4A8A 100%)",
     description: "Marketing students from Asper School of Business got real industry insights and faith-filled encouragement.",
-    photos: [
-      { file: "ASB.jpeg", alt: "Industry Insights Night" },
-      { file: "ASP2.jpeg", alt: "Industry Insights Night" },
-    ]
+    folder: "asper-night",
+    photos: ["ASB.jpeg", "ASP2.jpeg"],
   },
 ]
 
@@ -74,8 +61,8 @@ export default function GalleryPage() {
                   <div key={i} className="aspect-square rounded-2xl relative overflow-hidden"
                     style={{ border: '1px solid rgba(255,215,0,0.1)' }}>
                     <Image
-                      src={`/images/gallery/${photo.file}`}
-                      alt={photo.alt}
+                      src={`/images/gallery/${album.folder}/${photo}`}
+                      alt={`${album.event} photo ${i + 1}`}
                       fill
                       className="object-cover hover:scale-105 transition-transform duration-500"
                     />
