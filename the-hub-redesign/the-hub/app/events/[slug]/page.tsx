@@ -2,6 +2,13 @@ import { getEventBySlug, events, categoryLabels } from '@/lib/events'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
+// Map event slugs to gallery filter slugs
+const eventToGallerySlug: Record<string, string> = {
+  'sip-and-paint-july-2024': 'sip-and-paint',
+  'games-night-feb-2025': 'games-night',
+  'asper-industry-night-feb-2025': 'industry-insights',
+}
+
 export async function generateStaticParams() {
   return events.map((e) => ({ slug: e.slug }))
 }
@@ -11,6 +18,8 @@ export default function EventPage({ params }: { params: { slug: string } }) {
   if (!event) notFound()
 
   const paragraphs = event.fullDescription.split('\n\n').filter(Boolean)
+  const gallerySlug = eventToGallerySlug[event.slug]
+  const galleryLink = gallerySlug ? `/gallery?event=${gallerySlug}` : '/gallery'
 
   return (
     <div className="min-h-screen bg-royal">
@@ -27,14 +36,14 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             style={{ color: 'rgba(253,246,227,0.55)', fontFamily: 'DM Sans, sans-serif' }}>
             ← Back to Events
           </Link>
-          <div className="flex items-start gap-6">
-            <span className="text-6xl" aria-hidden="true">{event.emoji}</span>
+          <div className="flex items-start gap-4 sm:gap-6">
+            <span className="text-4xl sm:text-6xl" aria-hidden="true">{event.emoji}</span>
             <div>
               <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium mb-4 uppercase tracking-widest"
                 style={{ background: 'rgba(255,215,0,0.12)', color: '#FFD700', border: '1px solid rgba(255,215,0,0.3)', fontFamily: 'DM Sans, sans-serif' }}>
                 {categoryLabels[event.category]} · {event.status === 'upcoming' ? 'Upcoming' : 'Past Event'}
               </span>
-              <h1 className="mb-4" style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#FDF6E3', lineHeight: 1.1 }}>
+              <h1 className="mb-4" style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 'clamp(1.8rem, 5vw, 3.5rem)', color: '#FDF6E3', lineHeight: 1.1 }}>
                 {event.title}
               </h1>
               <div className="flex flex-wrap gap-4 text-sm" style={{ color: 'rgba(253,246,227,0.6)', fontFamily: 'DM Sans, sans-serif' }}>
@@ -109,9 +118,9 @@ export default function EventPage({ params }: { params: { slug: string } }) {
               ) : (
                 <div className="text-center py-8">
                   <p className="text-sm mb-4" style={{ color: 'rgba(253,246,227,0.55)', fontFamily: 'DM Sans, sans-serif' }}>
-                    Check out our gallery for photos from this event.
+                    Check out photos from this event.
                   </p>
-                  <Link href="/gallery" className="btn-gold inline-block px-5 py-2.5 rounded-full text-sm"
+                  <Link href={galleryLink} className="btn-gold inline-block px-5 py-2.5 rounded-full text-sm"
                     style={{ fontFamily: 'DM Sans, sans-serif' }}>
                     View Gallery →
                   </Link>

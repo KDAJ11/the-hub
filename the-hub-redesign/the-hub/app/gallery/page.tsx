@@ -1,10 +1,12 @@
 'use client'
 import Image from 'next/image'
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ChevronLeft, ChevronRight } from 'lucide-react'
-import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal'
+import ScrollReveal from '@/components/ScrollReveal'
 import BackgroundShapes from '@/components/BackgroundShapes'
+import FilmStrip from '@/components/animations/FilmStrip'
 
 const galleryData = [
   {
@@ -33,9 +35,18 @@ const galleryData = [
   },
 ]
 
+// Map event slugs (from event pages) to gallery filter names
+const slugToFilter: Record<string, string> = {
+  'sip-and-paint': 'Sip & Paint',
+  'sip-and-paint-july-2024': 'Sip & Paint',
+  'games-night': 'Games Night',
+  'games-night-feb-2025': 'Games Night',
+  'industry-insights': 'Industry Insights',
+  'asper-industry-night-feb-2025': 'Industry Insights',
+}
+
 const filters = ['All', 'Sip & Paint', 'Games Night', 'Industry Insights']
 
-// Flatten all photos with metadata
 type Photo = { src: string; event: string; date: string; filter: string; index: number }
 
 function getAllPhotos(activeFilter: string): Photo[] {
@@ -55,13 +66,33 @@ function getAllPhotos(activeFilter: string): Photo[] {
   return result
 }
 
-// Masonry height classes for visual variety
 const heightClasses = ['h-64', 'h-80', 'h-72', 'h-96', 'h-64', 'h-80', 'h-72', 'h-64', 'h-96', 'h-80', 'h-72']
 
 export default function GalleryPage() {
-  const [activeFilter, setActiveFilter] = useState('All')
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-royal" />}>
+      <GalleryContent />
+    </Suspense>
+  )
+}
+
+function GalleryContent() {
+  const searchParams = useSearchParams()
+
+  const eventParam = searchParams.get('event')
+  const initialFilter = eventParam ? (slugToFilter[eventParam] || 'All') : 'All'
+
+  const [activeFilter, setActiveFilter] = useState(initialFilter)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [touchStart, setTouchStart] = useState<number | null>(null)
+
+  // Update filter when URL changes
+  useEffect(() => {
+    if (eventParam) {
+      const mapped = slugToFilter[eventParam]
+      if (mapped) setActiveFilter(mapped)
+    }
+  }, [eventParam])
 
   const photos = getAllPhotos(activeFilter)
 
@@ -74,7 +105,6 @@ export default function GalleryPage() {
     setLightboxIndex((i) => (i !== null && i < photos.length - 1 ? i + 1 : 0))
   }, [photos.length])
 
-  // Keyboard navigation
   useEffect(() => {
     if (lightboxIndex === null) return
     const handleKey = (e: KeyboardEvent) => {
@@ -90,7 +120,6 @@ export default function GalleryPage() {
     }
   }, [lightboxIndex, closeLightbox, prevPhoto, nextPhoto])
 
-  // Touch/swipe
   const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientX)
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStart === null) return
@@ -105,10 +134,10 @@ export default function GalleryPage() {
   return (
     <div className="min-h-screen bg-royal relative">
       <BackgroundShapes />
-
       <div className="orb fixed pointer-events-none" style={{ width: '500px', height: '500px', top: '-100px', left: '-100px', background: 'rgba(98,40,168,0.2)', zIndex: 0 }} />
 
       <div className="max-w-6xl mx-auto relative z-10 pt-32 pb-24 px-6">
+        <FilmStrip />
         <ScrollReveal>
           <div className="section-label mb-6">Gallery</div>
           <h1 className="mb-4" style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 'clamp(2.5rem, 7vw, 5rem)', color: '#FDF6E3', lineHeight: 1.05 }}>
@@ -170,7 +199,6 @@ export default function GalleryPage() {
                   className="object-cover transition-all duration-500 group-hover:scale-[1.02] group-hover:brightness-110"
                   sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                 />
-                {/* Caption overlay on hover */}
                 <div className="absolute inset-x-0 bottom-0 p-4 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <p className="text-sm font-medium" style={{ color: '#FDF6E3', fontFamily: 'DM Sans, sans-serif' }}>
                     {photo.event}
@@ -199,37 +227,21 @@ export default function GalleryPage() {
             onTouchStart={handleTouchStart}
             onTouchEnd={handleTouchEnd}
           >
-            {/* Close */}
-            <button
-              onClick={closeLightbox}
+            <button onClick={closeLightbox}
               className="absolute top-6 right-6 w-11 h-11 flex items-center justify-center rounded-full transition-colors z-10"
-              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }}
-              aria-label="Close lightbox"
-            >
+              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }} aria-label="Close lightbox">
               <X className="w-6 h-6" />
             </button>
-
-            {/* Prev */}
-            <button
-              onClick={(e) => { e.stopPropagation(); prevPhoto() }}
+            <button onClick={(e) => { e.stopPropagation(); prevPhoto() }}
               className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full transition-colors z-10"
-              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }}
-              aria-label="Previous photo"
-            >
+              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }} aria-label="Previous photo">
               <ChevronLeft className="w-6 h-6" />
             </button>
-
-            {/* Next */}
-            <button
-              onClick={(e) => { e.stopPropagation(); nextPhoto() }}
+            <button onClick={(e) => { e.stopPropagation(); nextPhoto() }}
               className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center rounded-full transition-colors z-10"
-              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }}
-              aria-label="Next photo"
-            >
+              style={{ background: 'rgba(255,255,255,0.1)', color: '#FDF6E3' }} aria-label="Next photo">
               <ChevronRight className="w-6 h-6" />
             </button>
-
-            {/* Image */}
             <motion.div
               key={lightboxIndex}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -239,17 +251,9 @@ export default function GalleryPage() {
               className="relative w-[90vw] h-[80vh] max-w-5xl"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
-                src={photos[lightboxIndex].src}
-                alt={`${photos[lightboxIndex].event} — ${photos[lightboxIndex].date}`}
-                fill
-                className="object-contain"
-                sizes="90vw"
-                priority
-              />
+              <Image src={photos[lightboxIndex].src} alt={`${photos[lightboxIndex].event} — ${photos[lightboxIndex].date}`}
+                fill className="object-contain" sizes="90vw" priority />
             </motion.div>
-
-            {/* Counter */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-sm"
               style={{ color: 'rgba(253,246,227,0.5)', fontFamily: 'DM Sans, sans-serif' }}>
               {lightboxIndex + 1} / {photos.length}

@@ -53,30 +53,29 @@ export default function CrownScene() {
     upperBand.position.y = 0.55
     group.add(upperBand)
 
-    // Crown points (5 triangular peaks)
-    const numPoints = 5
+    // Crown points — 7 points (7 pillars)
+    const numPoints = 7
     for (let i = 0; i < numPoints; i++) {
       const angle = (i / numPoints) * Math.PI * 2
 
-      // Main point - using a cone
-      const pointGeom = new THREE.ConeGeometry(0.35, 1.0, 4)
+      // Main point - using a cone (slightly smaller to fit 7 evenly)
+      const pointGeom = new THREE.ConeGeometry(0.28, 0.9, 4)
       const point = new THREE.Mesh(pointGeom, goldMaterial)
       point.position.set(
         Math.cos(angle) * 1.4,
-        1.1,
+        1.05,
         Math.sin(angle) * 1.4
       )
-      // Rotate cone to face outward slightly
       point.lookAt(
         Math.cos(angle) * 3,
-        1.8,
+        1.7,
         Math.sin(angle) * 3
       )
       point.rotateX(Math.PI / 2)
       group.add(point)
 
       // Jewel orb on each point tip
-      const jewelGeom = new THREE.SphereGeometry(0.1, 16, 16)
+      const jewelGeom = new THREE.SphereGeometry(0.08, 16, 16)
       const jewelMaterial = new THREE.MeshPhysicalMaterial({
         color: 0x7B35C4,
         metalness: 0.3,
@@ -87,7 +86,7 @@ export default function CrownScene() {
       const jewel = new THREE.Mesh(jewelGeom, jewelMaterial)
       jewel.position.set(
         Math.cos(angle) * 1.4,
-        1.65,
+        1.55,
         Math.sin(angle) * 1.4
       )
       group.add(jewel)
@@ -95,7 +94,7 @@ export default function CrownScene() {
       // Connecting arch between points
       const nextAngle = ((i + 1) / numPoints) * Math.PI * 2
       const midAngle = (angle + nextAngle) / 2
-      const archGeom = new THREE.TorusGeometry(0.5, 0.06, 8, 16, Math.PI)
+      const archGeom = new THREE.TorusGeometry(0.35, 0.05, 8, 16, Math.PI)
       const arch = new THREE.Mesh(archGeom, darkGoldMaterial)
       arch.position.set(
         Math.cos(midAngle) * 1.4,
@@ -201,7 +200,7 @@ export default function CrownScene() {
     resize()
     window.addEventListener('resize', resize)
 
-    // Mouse handler
+    // Mouse handler (desktop)
     const handleMouseMove = (e: MouseEvent) => {
       if (!containerRef.current) return
       const rect = containerRef.current.getBoundingClientRect()
@@ -214,10 +213,8 @@ export default function CrownScene() {
     window.addEventListener('mousemove', handleMouseMove)
 
     // Device orientation for mobile
-    let hasOrientation = false
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (e.gamma !== null && e.beta !== null) {
-        hasOrientation = true
         mouseRef.current.x = (e.gamma / 45) * 0.5
         mouseRef.current.y = ((e.beta - 45) / 45) * 0.5
         isIdleRef.current = false
@@ -226,11 +223,29 @@ export default function CrownScene() {
       }
     }
 
-    // Request permission on iOS
-    if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
-      // Will be triggered by user gesture - skip auto-request
-    } else {
-      window.addEventListener('deviceorientation', handleOrientation)
+    // Request permission on iOS, otherwise just listen
+    const setupOrientation = async () => {
+      if (typeof (DeviceOrientationEvent as any).requestPermission === 'function') {
+        try {
+          const permission = await (DeviceOrientationEvent as any).requestPermission()
+          if (permission === 'granted') {
+            window.addEventListener('deviceorientation', handleOrientation)
+          }
+        } catch {
+          // Permission denied — ambient auto-rotation fallback (default idle behavior)
+        }
+      } else {
+        window.addEventListener('deviceorientation', handleOrientation)
+      }
+    }
+
+    // Only request on a user gesture context; for now add passive listener
+    if ('ontouchstart' in window) {
+      const requestOnTouch = () => {
+        setupOrientation()
+        containerRef.current?.removeEventListener('touchstart', requestOnTouch)
+      }
+      containerRef.current.addEventListener('touchstart', requestOnTouch, { once: true })
     }
 
     // Animation loop
@@ -240,7 +255,6 @@ export default function CrownScene() {
       const elapsed = clock.getElapsedTime()
 
       if (crown && !prefersReducedMotion.current) {
-        // Target rotation based on mouse
         const targetY = isIdleRef.current ? elapsed * 0.3 : mouseRef.current.x * 1.2
         const targetX = isIdleRef.current ? -0.15 : mouseRef.current.y * -0.3 - 0.15
 
@@ -292,7 +306,7 @@ export default function CrownScene() {
   return (
     <div
       ref={containerRef}
-      className="w-full h-full min-h-[300px] md:min-h-[500px]"
+      className="w-full h-full"
       style={{ touchAction: 'pan-y' }}
       aria-hidden="true"
     />

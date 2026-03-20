@@ -281,6 +281,32 @@ body {
   background: linear-gradient(135deg, #2D0A5E 0%, #1A0533 50%, #3A0F70 100%);
 }
 
+/* SVG animation keyframes */
+@keyframes svgPulse {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.1); }
+}
+
+@keyframes spotlightSway {
+  0%, 100% { transform: translateX(0px); }
+  50% { transform: translateX(30px); }
+}
+
+@keyframes flameFlicker {
+  0% { transform: scaleY(0.9) scaleX(0.95); }
+  100% { transform: scaleY(1.1) scaleX(1.05); }
+}
+
+@keyframes strokeDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Flip card styles */
+.flip-card-inner {
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-style: preserve-3d;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--hub-bg); }

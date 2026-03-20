@@ -6,9 +6,13 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { getUpcomingEvents, getPastEvents, categoryLabels } from '@/lib/events'
 import EventCard from '@/components/EventCard'
 import ScrollReveal, { StaggerContainer, StaggerItem } from '@/components/ScrollReveal'
+import FlipCard from '@/components/FlipCard'
+import NetworkDiagram from '@/components/animations/NetworkDiagram'
+import SpotlightSweep from '@/components/animations/SpotlightSweep'
+import OpenBook from '@/components/animations/OpenBook'
 import {
-  Crown, Users, Zap, Heart,
-  Trophy, Gamepad2, Palette, GraduationCap, Music, Globe,
+  Crown, Users, Zap, Heart, Star, Globe, Shield,
+  Trophy, Gamepad2, Palette, GraduationCap, Music,
   BookOpen,
 } from 'lucide-react'
 
@@ -67,12 +71,50 @@ const categories = [
   { icon: Globe, name: 'Community', description: 'Outreach, volunteering, and impact-driven events.', gradient: 'from-teal-900/40 to-teal-700/20', photo: null },
 ]
 
-/* ─── Pillar Data ─── */
+/* ─── 7 Pillar Data ─── */
 const pillars = [
-  { icon: Crown, title: 'Royal Identity', description: 'We believe every young person carries a royal identity — created with purpose and called to lead.' },
-  { icon: Users, title: 'Community First', description: 'Real growth happens in community. Every event is designed to connect people and create belonging.' },
-  { icon: Zap, title: 'Vibrant & Active', description: 'From football pitches to boardrooms, we meet young people where they are — with energy and intention.' },
-  { icon: Heart, title: 'Faith at the Centre', description: 'Everything we do is rooted in faith. We\'re leading others back to God.' },
+  {
+    icon: Crown, title: 'Royal Identity',
+    description: 'You are royalty. Created with purpose, called to lead. The Hub exists to remind you of who you already are.',
+    scripture: '1 Peter 2:9',
+    verse: 'But you are a chosen generation, a royal priesthood, a holy nation, His own special people, that you may proclaim the praises of Him who called you out of darkness into His marvelous light.',
+  },
+  {
+    icon: Users, title: 'Community First',
+    description: 'Real growth happens in community. Every Hub event is designed to connect you with people who sharpen you, challenge you, and have your back.',
+    scripture: 'Proverbs 27:17',
+    verse: 'As iron sharpens iron, so a man sharpens the countenance of his friend.',
+  },
+  {
+    icon: Zap, title: 'Vibrant & Active',
+    description: 'Your life moves fast. The Hub keeps up. Sports, socials, professional nights, creative workshops — we bring the energy wherever you are.',
+    scripture: 'Philippians 4:13',
+    verse: 'I can do all things through Christ who strengthens me.',
+  },
+  {
+    icon: Heart, title: 'Faith at the Centre',
+    description: "Everything we do starts and ends with God. You're part of a generation leading others to Christ — and The Hub is one of the ways you do that.",
+    scripture: 'Matthew 6:33',
+    verse: 'But seek first the kingdom of God and His righteousness, and all these things shall be added to you.',
+  },
+  {
+    icon: Star, title: 'Excellence',
+    description: "We don't do average events and we don't raise average leaders. Excellence is the righteousness of God at work.",
+    scripture: 'Ephesians 2:10',
+    verse: 'For we are His workmanship, created in Christ Jesus for good works, which God prepared beforehand that we should walk in them.',
+  },
+  {
+    icon: Globe, title: 'Impact',
+    description: "It's not enough to grow yourself. You're called to impact your world — your campus, your workplace, your city.",
+    scripture: 'Matthew 5:16',
+    verse: 'Let your light so shine before men, that they may see your good works and glorify your Father in heaven.',
+  },
+  {
+    icon: Shield, title: 'Boldness',
+    description: "Fear doesn't live here. You were given a spirit of power, love, and a sound mind. Act like it.",
+    scripture: '2 Timothy 1:7',
+    verse: 'For God has not given us a spirit of fear, but of power and of love and of a sound mind.',
+  },
 ]
 
 export default function HomePage() {
@@ -80,8 +122,8 @@ export default function HomePage() {
   const past = getPastEvents()
   const prefersReducedMotion = useReducedMotion()
 
-  const counter1 = useCountUp(3)
-  const counter2 = useCountUp(150)
+  const counter1 = useCountUp(15)
+  const counter2 = useCountUp(500)
   const counter3 = useCountUp(6)
   const counter4 = useCountUp(1)
 
@@ -89,22 +131,31 @@ export default function HomePage() {
     <div className="min-h-screen bg-royal">
 
       {/* ═══════════════════════════════════════════════════════
-          HERO — Split layout: text left, 3D crown right
+          HERO — Mobile: crown on top, text below. Desktop: text left, crown right.
       ═══════════════════════════════════════════════════════ */}
       <section className="relative min-h-screen flex items-center overflow-hidden px-6 grain">
         {/* Background orbs */}
         <div className="orb absolute pointer-events-none" style={{ width: '500px', height: '500px', top: '-100px', left: '-100px', background: 'rgba(123,53,196,0.35)' }} />
         <div className="orb absolute pointer-events-none" style={{ width: '400px', height: '400px', bottom: '0', right: '-50px', background: 'rgba(74,26,138,0.3)', animationDelay: '-8s' }} />
 
-        <div className="relative z-10 max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-8 items-center pt-24 pb-16 md:py-0">
-          {/* Text side */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8 items-center pt-28 pb-20 md:py-0">
+
+          {/* 3D Crown — shown FIRST on mobile (above text) */}
+          <div className="relative h-[180px] w-full md:h-[550px] md:order-2 flex items-center justify-center">
+            <div className="w-full h-full max-w-[280px] md:max-w-none">
+              <CrownScene />
+            </div>
+          </div>
+
+          {/* Text side — shown SECOND on mobile (below crown) */}
           <motion.div
+            className="text-center md:text-left md:order-1"
             variants={prefersReducedMotion ? undefined : heroContainer}
             initial={prefersReducedMotion ? undefined : 'hidden'}
             animate={prefersReducedMotion ? undefined : 'visible'}
           >
-            <motion.div variants={prefersReducedMotion ? undefined : heroItem} className="mb-6">
-              <svg viewBox="0 0 80 80" className="w-16 h-16" fill="none" aria-hidden="true">
+            <motion.div variants={prefersReducedMotion ? undefined : heroItem} className="mb-6 flex justify-center md:justify-start">
+              <svg viewBox="0 0 80 80" className="w-14 h-14 md:w-16 md:h-16" fill="none" aria-hidden="true">
                 <rect width="80" height="80" rx="16" fill="rgba(98,40,168,0.6)" />
                 <rect width="80" height="80" rx="16" fill="none" stroke="#FFD700" strokeWidth="1" strokeOpacity="0.4" />
                 <path d="M18 20 L24 32 L40 22 L56 32 L62 20 L62 38 L18 38 Z" fill="#FFD700" />
@@ -117,7 +168,7 @@ export default function HomePage() {
               className="mb-3"
               style={{
                 fontFamily: 'Archivo Black, sans-serif',
-                fontSize: 'clamp(3.5rem, 10vw, 8rem)',
+                fontSize: 'clamp(3rem, 10vw, 8rem)',
                 lineHeight: 1,
                 letterSpacing: '-0.03em',
                 color: '#FDF6E3',
@@ -136,31 +187,26 @@ export default function HomePage() {
 
             <motion.p
               variants={prefersReducedMotion ? undefined : heroItem}
-              className="text-lg sm:text-xl mb-10 max-w-lg"
+              className="text-lg sm:text-xl mb-10 max-w-lg mx-auto md:mx-0"
               style={{ color: 'rgba(253,246,227,0.65)', fontFamily: 'DM Sans, sans-serif', fontWeight: 300 }}
             >
               Events that build community, sharpen purpose, and glorify God.
             </motion.p>
 
-            <motion.div variants={prefersReducedMotion ? undefined : heroItem} className="flex flex-col sm:flex-row gap-4">
+            <motion.div variants={prefersReducedMotion ? undefined : heroItem} className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
               <Link href="/events" className="btn-gold px-8 py-4 rounded-full text-base text-center"
                 style={{ fontFamily: 'DM Sans, sans-serif' }}>
                 See All Events
               </Link>
               {upcoming[0] && (
                 <Link href={`/events/${upcoming[0].slug}`}
-                  className="btn-purple px-8 py-4 rounded-full text-base text-center"
+                  className="btn-purple px-6 py-4 rounded-full text-sm sm:text-base text-center"
                   style={{ fontFamily: 'DM Sans, sans-serif' }}>
                   Register: {upcoming[0].title.split(' ').slice(0, 3).join(' ')}
                 </Link>
               )}
             </motion.div>
           </motion.div>
-
-          {/* 3D Crown side */}
-          <div className="relative h-[350px] md:h-[550px]">
-            <CrownScene />
-          </div>
         </div>
 
         {/* Scroll indicator */}
@@ -173,47 +219,46 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION A — Who We Are
+          SECTION A — Who We Are (with Network Diagram SVG)
       ═══════════════════════════════════════════════════════ */}
       <section className="py-24 px-6 relative">
         <div className="max-w-4xl mx-auto">
+          <NetworkDiagram />
           <ScrollReveal>
-            <div className="h-px w-24 mb-8" style={{ background: 'linear-gradient(to right, #FFD700, transparent)' }} />
+            <div className="h-px w-24 mb-8 mx-auto md:mx-0" style={{ background: 'linear-gradient(to right, #FFD700, transparent)' }} />
           </ScrollReveal>
           <ScrollReveal delay={0.1}>
             <p className="text-xl sm:text-2xl leading-relaxed"
               style={{ color: 'rgba(253,246,227,0.8)', fontFamily: 'DM Sans, sans-serif', fontWeight: 300 }}>
-              The Hub is a gathering of young, royal, and vibrant leaders. We create intentional, high-quality events every single month — across sports, arts, professional development, social, worship, and community — where young people discover their identity, develop their gifts, and grow in their faith.
+              The Hub is a gathering of young leaders who refuse to sit on the sidelines. We create intentional, high-quality events every single month — across sports, arts, professional development, social, worship, and community — where you discover your identity, develop your gifts, and grow in your faith.
             </p>
           </ScrollReveal>
           <ScrollReveal delay={0.2}>
-            <div className="h-px w-24 mt-8" style={{ background: 'linear-gradient(to left, #FFD700, transparent)' }} />
+            <div className="h-px w-24 mt-8 mx-auto md:mx-0" style={{ background: 'linear-gradient(to left, #FFD700, transparent)' }} />
           </ScrollReveal>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION B — Four Pillars
+          SECTION B — 7 Pillars (Flippable Cards)
       ═══════════════════════════════════════════════════════ */}
       <section className="py-24 px-6 relative">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <ScrollReveal>
             <h2 className="text-3xl sm:text-4xl mb-12 text-center" style={{ color: '#FDF6E3', fontFamily: 'Archivo Black, sans-serif' }}>
               What drives us
             </h2>
           </ScrollReveal>
-          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" staggerDelay={0.12}>
             {pillars.map((pillar) => (
-              <StaggerItem key={pillar.title}>
-                <div className="card-royal rounded-2xl p-7 h-full group">
-                  <pillar.icon className="w-8 h-8 mb-4 text-hub-gold" strokeWidth={1.5} aria-hidden="true" />
-                  <h3 className="text-lg font-medium mb-3" style={{ color: '#FFD700', fontFamily: 'Archivo Black, sans-serif' }}>
-                    {pillar.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: 'rgba(253,246,227,0.6)', fontFamily: 'DM Sans, sans-serif' }}>
-                    {pillar.description}
-                  </p>
-                </div>
+              <StaggerItem key={pillar.title} className="min-h-[280px]">
+                <FlipCard
+                  icon={pillar.icon}
+                  title={pillar.title}
+                  description={pillar.description}
+                  scripture={pillar.scripture}
+                  verse={pillar.verse}
+                />
               </StaggerItem>
             ))}
           </StaggerContainer>
@@ -238,7 +283,6 @@ export default function HomePage() {
                   className="relative rounded-2xl p-7 h-44 flex flex-col justify-end overflow-hidden group cursor-default transition-all duration-300 hover:-translate-y-1"
                   style={{ border: '1px solid rgba(255,215,0,0.15)', background: 'rgba(26,5,51,0.8)' }}
                 >
-                  {/* Hover background photo */}
                   {cat.photo && (
                     <div
                       className="absolute inset-0 bg-cover bg-center opacity-0 group-hover:opacity-30 transition-opacity duration-500"
@@ -316,28 +360,27 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION E — Upcoming Events
+          SECTION E — Upcoming Events (with Spotlight SVG)
       ═══════════════════════════════════════════════════════ */}
       {upcoming.length > 0 && (
         <section className="py-24 px-6 relative">
-          <div className="max-w-6xl mx-auto">
+          <SpotlightSweep />
+          <div className="max-w-6xl mx-auto relative z-10">
             <ScrollReveal>
               <div className="section-label mb-12">Next Up</div>
             </ScrollReveal>
             {upcoming.map((event) => (
               <ScrollReveal key={event.slug} delay={0.1}>
                 <Link href={`/events/${event.slug}`}>
-                  <div className="rounded-3xl p-10 sm:p-14 relative overflow-hidden grain cursor-pointer transition-all duration-300 hover:scale-[1.01]"
+                  <div className="rounded-3xl p-8 sm:p-14 relative overflow-hidden grain cursor-pointer transition-all duration-300 hover:scale-[1.01]"
                     style={{ background: event.coverGradient, border: '1px solid rgba(255,215,0,0.2)', boxShadow: '0 20px 80px rgba(74,26,138,0.4)' }}>
                     <div className="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-30 pointer-events-none"
                       style={{ background: 'rgba(255,215,0,0.15)', transform: 'translate(30%, -30%)' }} />
 
                     {/* Pulsing UPCOMING badge */}
-                    <div className="absolute top-6 right-8 flex items-center gap-2">
-                      <span
-                        className="inline-block w-2 h-2 rounded-full"
-                        style={{ background: '#FFD700', animation: 'pulse-badge 2s ease-in-out infinite' }}
-                      />
+                    <div className="absolute top-6 right-6 sm:right-8 flex items-center gap-2">
+                      <span className="inline-block w-2 h-2 rounded-full"
+                        style={{ background: '#FFD700', animation: 'pulse-badge 2s ease-in-out infinite' }} />
                       <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#FFD700', fontFamily: 'DM Sans, sans-serif' }}>
                         Upcoming
                       </span>
@@ -348,10 +391,10 @@ export default function HomePage() {
                       {categoryLabels[event.category]}
                     </span>
 
-                    <h2 style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 'clamp(2rem, 5vw, 4rem)', color: '#FDF6E3', lineHeight: 1.1, marginBottom: '1rem' }}>
+                    <h2 style={{ fontFamily: 'Archivo Black, sans-serif', fontSize: 'clamp(1.8rem, 5vw, 4rem)', color: '#FDF6E3', lineHeight: 1.1, marginBottom: '1rem' }}>
                       {event.title}
                     </h2>
-                    <p className="text-lg max-w-xl mb-8" style={{ color: 'rgba(253,246,227,0.7)', fontFamily: 'DM Sans, sans-serif', fontWeight: 300 }}>
+                    <p className="text-base sm:text-lg max-w-xl mb-8" style={{ color: 'rgba(253,246,227,0.7)', fontFamily: 'DM Sans, sans-serif', fontWeight: 300 }}>
                       {event.shortDescription}
                     </p>
                     <div className="flex flex-wrap gap-3">
@@ -398,12 +441,12 @@ export default function HomePage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION G — The Word (Rhapsody)
+          SECTION G — The Word (with Open Book SVG)
       ═══════════════════════════════════════════════════════ */}
       <section className="py-24 px-6 relative">
         <div className="max-w-4xl mx-auto">
           <ScrollReveal>
-            <div className="rounded-3xl p-10 sm:p-14 relative overflow-hidden grain"
+            <div className="rounded-3xl p-8 sm:p-14 relative overflow-hidden grain"
               style={{
                 background: 'linear-gradient(135deg, #2D0A5E 0%, #3A1570 40%, #2D0A5E 100%)',
                 border: '1px solid rgba(255,215,0,0.15)',
@@ -413,6 +456,8 @@ export default function HomePage() {
                 style={{ background: 'radial-gradient(ellipse at top right, rgba(255,233,122,0.4) 0%, transparent 60%)' }} />
 
               <div className="relative z-10">
+                <OpenBook />
+
                 <div className="flex items-center gap-3 mb-6">
                   <BookOpen className="w-7 h-7 text-hub-gold" strokeWidth={1.5} aria-hidden="true" />
                   <span className="text-gold-shimmer" style={{ fontFamily: 'Cinzel, serif', fontSize: '0.8rem', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
@@ -445,7 +490,7 @@ export default function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════
-          Mission Strip (existing, preserved)
+          Mission Strip
       ═══════════════════════════════════════════════════════ */}
       <section className="py-24 px-6">
         <div className="max-w-4xl mx-auto">
