@@ -19,7 +19,6 @@ export default function EventPage({ params }: { params: { slug: string } }) {
         style={{ background: event.coverGradient, borderBottom: '1px solid rgba(255,215,0,0.15)' }}>
         <div className="absolute inset-0 opacity-30"
           style={{ background: 'radial-gradient(ellipse at top right, rgba(255,215,0,0.2) 0%, transparent 60%)' }} />
-        {/* Shapes */}
         <div className="shape shape-ring absolute" style={{ top: '20%', right: '10%', opacity: 0.3 }} />
         <div className="shape shape-diamond absolute" style={{ bottom: '15%', right: '25%', opacity: 0.4 }} />
 
@@ -29,7 +28,7 @@ export default function EventPage({ params }: { params: { slug: string } }) {
             ← Back to Events
           </Link>
           <div className="flex items-start gap-6">
-            <span className="text-6xl">{event.emoji}</span>
+            <span className="text-6xl" aria-hidden="true">{event.emoji}</span>
             <div>
               <span className="inline-block px-4 py-1.5 rounded-full text-xs font-medium mb-4 uppercase tracking-widest"
                 style={{ background: 'rgba(255,215,0,0.12)', color: '#FFD700', border: '1px solid rgba(255,215,0,0.3)', fontFamily: 'DM Sans, sans-serif' }}>
@@ -39,8 +38,8 @@ export default function EventPage({ params }: { params: { slug: string } }) {
                 {event.title}
               </h1>
               <div className="flex flex-wrap gap-4 text-sm" style={{ color: 'rgba(253,246,227,0.6)', fontFamily: 'DM Sans, sans-serif' }}>
-                <span>📅 {event.date}</span>
-                <span>📍 {event.location}</span>
+                <span>{event.date}</span>
+                <span>{event.location}</span>
               </div>
             </div>
           </div>
@@ -101,7 +100,6 @@ export default function EventPage({ params }: { params: { slug: string } }) {
                   ) : (
                     <div className="text-center py-8 rounded-xl"
                       style={{ background: 'rgba(98,40,168,0.2)', border: '1px dashed rgba(255,215,0,0.2)' }}>
-                      <span className="text-3xl mb-3 block">⏳</span>
                       <p className="text-sm" style={{ color: 'rgba(253,246,227,0.45)', fontFamily: 'DM Sans, sans-serif' }}>
                         Registration form coming soon!
                       </p>
@@ -110,7 +108,6 @@ export default function EventPage({ params }: { params: { slug: string } }) {
                 </>
               ) : (
                 <div className="text-center py-8">
-                  <span className="text-4xl mb-4 block">📸</span>
                   <p className="text-sm mb-4" style={{ color: 'rgba(253,246,227,0.55)', fontFamily: 'DM Sans, sans-serif' }}>
                     Check out our gallery for photos from this event.
                   </p>

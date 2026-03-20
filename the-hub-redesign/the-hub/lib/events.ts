@@ -25,7 +25,7 @@ export const events: Event[] = [
     year: 2025,
     category: 'sports',
     status: 'upcoming',
-    shortDescription: "A hihgly competitive football (soccer) tournament for players in our church community. Lace up, show up, win!",
+    shortDescription: "A highly competitive football (soccer) tournament for players in our church community. Lace up, show up, win!",
     fullDescription: "The Hub is bringing everyone together on the football pitch! Whether you're a casual player or a seasoned striker, this tournament is your chance to compete, connect, and represent your faith with excellence.\n\nExpect full matches, team spirit, and a whole lot of energy. Every goal scored is a goal for Lord Jesus.",
     location: 'Toronto',
     registrationFormUrl: '',
